@@ -15,13 +15,37 @@ struct QuoteResponse: Decodable {
 }
 
 struct Quote: Decodable {
-    let symbol: String?
-    let quoteSummary: QuoteSummary?
+    let symbol: String
+    let quoteSummary: QuoteSummary
     
+    var stockDetails: StockItemDetails {
+        let detail = quoteSummary.summaryDetail
+        
+        return StockItemDetails(
+            symbol: symbol,
+            previousClose: detail.previousClose,
+            open: detail.open,
+            dayLow: detail.dayLow,
+            dayHigh: detail.dayHigh,
+            marketCap: detail.marketCap,
+            volume: detail.volume,
+            averageVolume: detail.averageVolume,
+            fiftyTwoWeekLow: detail.fiftyTwoWeekLow,
+            fiftyTwoWeekHigh: detail.fiftyTwoWeekHigh,
+            fiftyDayAverage: detail.fiftyDayAverage,
+            twoHundredDayAverage: detail.twoHundredDayAverage,
+            beta: detail.beta,
+            trailingPE: detail.trailingPE,
+            forwardPE: detail.forwardPE,
+            dividendRate: detail.dividendRate,
+            dividendYield: detail.dividendYield,
+            currency: detail.currency
+        )
+    }
 }
 
 struct QuoteSummary: Decodable {
-    let summaryDetail: QuoteSummaryDetail?
+    let summaryDetail: QuoteSummaryDetail
 }
 
 struct QuoteSummaryDetail: Decodable {
@@ -83,4 +107,3 @@ struct QuoteSummaryDetail: Decodable {
 
     let tradeable: Bool?
 }
-
