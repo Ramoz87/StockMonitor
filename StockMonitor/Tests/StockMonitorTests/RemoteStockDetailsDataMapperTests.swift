@@ -11,13 +11,20 @@ import XCTest
 final class RemoteStockDetailsDataMapperTests: XCTestCase {
 
     func test_map_throwsErrorOnNon200HTTPCode() throws {
-        let json = makeJSON([])
+        let message = "a response error"
+        let json = makeErrorJSON(message: message)
         let codes = [199, 300, 400, 500]
     
         try codes.forEach { code in
-            XCTAssertThrowsError (
-                try RemoteStockDetailsDataMapper.map(json, HTTPURLResponse(url: anyURL(), statusCode: code, httpVersion: nil, headerFields: nil)!)
-            )
+            XCTAssertThrowsError(
+                try RemoteStockSummaryDataMapper.map(json, HTTPURLResponse(statusCode: code))
+            ) { error in
+                guard let responseError = error as? ResponseError else {
+                    return XCTFail("Expected ResponseError, got \(error) instead")
+                }
+                
+                XCTAssertEqual(responseError.message, message)
+            }
         }
     }
     
