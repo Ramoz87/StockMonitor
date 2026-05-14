@@ -27,18 +27,12 @@ struct Quote: Decodable {
             open: detail.open,
             dayLow: detail.dayLow,
             dayHigh: detail.dayHigh,
-            marketCap: detail.marketCap,
             volume: detail.volume,
             averageVolume: detail.averageVolume,
             fiftyTwoWeekLow: detail.fiftyTwoWeekLow,
             fiftyTwoWeekHigh: detail.fiftyTwoWeekHigh,
             fiftyDayAverage: detail.fiftyDayAverage,
             twoHundredDayAverage: detail.twoHundredDayAverage,
-            beta: detail.beta,
-            trailingPE: detail.trailingPE,
-            forwardPE: detail.forwardPE,
-            dividendRate: detail.dividendRate,
-            dividendYield: detail.dividendYield,
             currency: detail.currency
         )
     }
@@ -62,15 +56,9 @@ struct QuoteSummaryDetail: Decodable {
     let regularMarketDayLow: Double?
     let regularMarketDayHigh: Double?
 
-    let dividendRate: Double?
-    let dividendYield: Double?
     let exDividendDate: Int?
     let payoutRatio: Double?
     let fiveYearAvgDividendYield: Double?
-
-    let beta: Double?
-    let trailingPE: Double?
-    let forwardPE: Double?
 
     let volume: Int64?
     let regularMarketVolume: Int64?
@@ -107,3 +95,4 @@ struct QuoteSummaryDetail: Decodable {
 
     let tradeable: Bool?
 }
+

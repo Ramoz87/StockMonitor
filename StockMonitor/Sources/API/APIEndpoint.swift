@@ -9,20 +9,20 @@ import Foundation
 
 public enum APIEndpoint {
         
-    case summary(region: Region)
-    case quotes(region: Region, symbol: String)
+    case summary(region: String)
+    case quotes(region: String, symbol: String)
     
     public func url(baseURL: URL) -> URL {
         switch self {
         case .summary(let region):
             url(baseUrl: baseURL,
                 path:"/market/v2/get-summary",
-                params: ["region" : region.rawValue])
+                params: ["region" : region])
             
         case .quotes(let region, let symbol):
             url(baseUrl: baseURL,
                 path: "/market/v2/get-quotes",
-                params: ["region" : region.rawValue, "symbols" : symbol])
+                params: ["region" : region, "symbols" : symbol])
         }
     }
     

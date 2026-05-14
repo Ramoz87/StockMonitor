@@ -17,12 +17,12 @@ public final class StockService {
         self.client = client
     }
         
-    public func getStocks(region: Region) async throws -> [StockItem] {
+    public func getStocks(region: String) async throws -> [StockItem] {
         let (data, response) = try await sendRequest(for: .summary(region: region))
         return try RemoteStockSummaryDataMapper.map(data, response)
     }
     
-    public func getStockDetails(region: Region, symbol: String) async throws -> StockItemDetails? {
+    public func getStockDetails(region: String, symbol: String) async throws -> StockItemDetails? {
         let (data, response) = try await sendRequest(for: .quotes(region: region, symbol: symbol))
         return try RemoteStockDetailsDataMapper.map(data, response)
     }

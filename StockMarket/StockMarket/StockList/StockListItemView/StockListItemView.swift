@@ -11,8 +11,8 @@ import StockMonitor
 struct StockListItemView: View {
     private let model: StockListItemViewModel
     
-    init(stock: StockItem) {
-        self.model = StockListItemViewModel(stock: stock)
+    init(model: StockListItemViewModel) {
+        self.model = model
     }
     
     var body: some View {
@@ -30,7 +30,7 @@ struct StockListItemView: View {
             Spacer()
             
             VStack(alignment: .trailing) {
-                Text(model.price, format: .currency(code: "USD").precision(.fractionLength(2)))
+                Text(model.price, format: .number.precision(.fractionLength(2)))
                     .bold()
                 
                 Label {
@@ -48,10 +48,12 @@ struct StockListItemView: View {
 
 #Preview {
     List {
-        StockListItemView(stock: .init(symbol: "AAPL",
-                                       shortName: "Apple Inc.",
-                                       time: 0,
-                                       previousPrice: 205.50,
-                                       currentPrice: 210.30))
+        StockListItemView(model: .init(stock:
+                .init(symbol: "AAPL",
+                      shortName: "Apple Inc.",
+                      region: "US",
+                      time: 0,
+                      previousPrice: 205.50,
+                      currentPrice: 210.30)))
     }
 }

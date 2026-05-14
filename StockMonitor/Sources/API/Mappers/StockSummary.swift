@@ -14,6 +14,7 @@ struct StockSummaryResponse: Decodable {
             .map { item in
                 StockItem(symbol: item.symbol,
                           shortName: item.shortName,
+                          region: item.region,
                           time: item.regularMarketTime.raw,
                           previousPrice: item.regularMarketPreviousClose.raw,
                           currentPrice: item.regularMarketPrice.raw)
@@ -28,6 +29,7 @@ struct MarketSummaryAndSparkResponse: Decodable {
 
 struct MarketSummaryItem: Decodable {
     let symbol: String
+    let region: String
     let shortName: String
     let regularMarketTime: MarketValue<Int>
     let regularMarketPreviousClose: MarketValue<Double>

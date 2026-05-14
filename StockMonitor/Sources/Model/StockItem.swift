@@ -5,17 +5,19 @@
 //  Created by Yury Ramazanov on 13.05.2026.
 //
 
-public struct StockItem: Equatable, Identifiable {
+public struct StockItem: Equatable, Hashable, Identifiable, Sendable {
     public var id: String { symbol }
     
     public let symbol: String
     public let shortName: String
+    public let region: String
     public let time: Int
     public let previousPrice: Double
     public let currentPrice: Double
     
     public init(symbol: String,
                 shortName: String,
+                region: String,
                 time: Int,
                 previousPrice: Double,
                 currentPrice: Double) {
@@ -24,5 +26,6 @@ public struct StockItem: Equatable, Identifiable {
         self.time = time
         self.previousPrice = previousPrice
         self.currentPrice = currentPrice
+        self.region = region
     }
 }

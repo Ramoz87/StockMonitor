@@ -12,33 +12,20 @@ import StockMonitor
 @Observable
 final class StockListViewModel {
    
-    enum State {
-        case loading
-        case updated([StockItem])
-        case error(String)
-    }
-    
     private let service: StockService
-    private var stocks = [StockItem]()
-    private var tasks = [Region: Task<Void, Never>]()
-    
-    private(set) var state: State = .updated([])
-    private var showLoadingState: Bool {
-        if stocks.isEmpty {
-            return true
+    private var loadedStocks: [StockItem] = [] {
+        didSet {
+            stocks = stocksMatchingSearch()
         }
-        
-        if case .error = state {
-            return true
-        }
-        
-        return false
     }
+    private var tasks = [String: Task<Void, Never>]()
+    
+    private(set) var errorMessage: String? = nil
+    private(set) var stocks = [StockItem]()
     
     var searchText = "" {
         didSet {
-            guard case .updated = state else { return }
-            state = .updated(stocksMatchingSearch())
+            stocks = stocksMatchingSearch()
         }
     }
     
@@ -46,48 +33,44 @@ final class StockListViewModel {
         self.service = service
     }
     
-    func loadStocks(region: Region = .US) {
+    func loadStocks(region: String = "US") async {
         for taskRegion in tasks.keys where taskRegion != region {
             tasks[taskRegion]?.cancel()
             tasks[taskRegion] = nil
         }
         
-        if tasks[region] != nil {
-            return
+        if let task = tasks[region] {
+            return await task.value
         }
-        
-        if showLoadingState {
-            state = .loading
-        }
-        
+                
         let task = Task { [weak self] in
             guard let self else { return }
             
             defer {
-                self.tasks[region] = nil
+                tasks[region] = nil
             }
             
             do {
                 let stocks = try await service.getStocks(region: region)
                 guard !Task.isCancelled else { return }
-                
-                self.stocks = stocks
-                self.state = .updated(self.stocksMatchingSearch())
+                loadedStocks = stocks
+                errorMessage = nil
             } catch {
                 guard !Task.isCancelled else { return }
-                self.state = .error(error.localizedDescription)
+                errorMessage = error.localizedDescription
             }
         }
-        
         tasks[region] = task
+        
+        return await task.value
     }
     
     private func stocksMatchingSearch() -> [StockItem] {
         guard !searchText.isEmpty else {
-            return stocks
+            return loadedStocks
         }
         
-        return stocks.filter { stock in
+        return loadedStocks.filter { stock in
             stock.shortName.localizedStandardContains(searchText)
         }
     }
