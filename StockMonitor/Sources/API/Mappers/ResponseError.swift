@@ -7,6 +7,10 @@
 
 import Foundation
 
-public struct ResponseError: Error, Decodable {
+public struct ResponseError: LocalizedError, Decodable {
     public let message: String
+    
+    public var errorDescription: String? {
+        message
+    }
 }

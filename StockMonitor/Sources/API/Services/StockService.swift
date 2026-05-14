@@ -7,20 +7,16 @@
 
 import Foundation
 
-let baseUrl = "https://apidojo-yahoo-finance-v1.p.rapidapi.com"
 public final class StockService {
     private let baseURL: URL
     private let client: HTTPClient
+    public var requestAdapter: APIRequestAdapter?
     
     public init(baseURL: URL, client: HTTPClient) {
         self.baseURL = baseURL
         self.client = client
     }
-    
-    public convenience init(client: HTTPClient) {
-        self.init(baseURL: URL(string: baseUrl)!, client: client)
-    }
-    
+        
     public func getStocks(region: Region) async throws -> [StockItem] {
         let (data, response) = try await sendRequest(for: .summary(region: region))
         return try RemoteStockSummaryDataMapper.map(data, response)
@@ -33,7 +29,12 @@ public final class StockService {
     
     private func sendRequest(for endpoint: APIEndpoint) async throws -> (Data, HTTPURLResponse) {
         let url = endpoint.url(baseURL: baseURL)
-        let request = URLRequest(url: url)
+        var request = URLRequest(url: url)
+        
+        if let requestAdapter {
+            request = requestAdapter.adaptRequest(request)
+        }
+        
         return try await client.send(request: request)
     }
 }
