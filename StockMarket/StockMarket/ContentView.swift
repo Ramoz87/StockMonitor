@@ -6,16 +6,19 @@
 //
 
 import SwiftUI
+import StockMonitor
 
 struct ContentView: View {
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
-        }
-        .padding()
+        makeStockListView()
+    }
+    
+    func makeStockListView() -> some View {
+        let baseUrl = URL(string: "https://apidojo-yahoo-finance-v1.p.rapidapi.com")!
+        let service = StockService(baseURL: baseUrl, client: URLSessionHTTPClient())
+        service.requestAdapter = ApiKeyRequestAdapter(apiKey: "9aebe50b15msh003af9ba57fd9edp1091f4jsnb38c136f2c95")
+        let model = StockListViewModel(service: service)
+        return StockListView(viewModel: model)
     }
 }
 
