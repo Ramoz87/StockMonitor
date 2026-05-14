@@ -11,15 +11,8 @@ func anyURL() -> URL {
     return URL(string: "http://any-url.com")!
 }
 
-func jsonValue<T>(_ value: T?) -> Any {
-    return value.map { $0 as Any } ?? NSNull()
-}
-
-func makeErrorJSON(message: String) -> Data {
-    let json = [
-        "message": message
-    ]
-    return try! JSONSerialization.data(withJSONObject: json)
+func anyNSError() -> NSError {
+    NSError(domain: "any error", code: 0)
 }
 
 extension HTTPURLResponse {

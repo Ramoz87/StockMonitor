@@ -38,7 +38,7 @@ final class RemoteStockSummaryDataMapperTests: XCTestCase {
     
     func test_map_throwErrorOn200HTTPCodeAndNotEmptyError() throws {
         let message = "an error"
-        let json = makeJSON([], error: message)
+        let json = makeStocksJSON([], error: message)
         
         XCTAssertThrowsError(
             try RemoteStockSummaryDataMapper.map(json, HTTPURLResponse(statusCode: 200))
@@ -52,7 +52,7 @@ final class RemoteStockSummaryDataMapperTests: XCTestCase {
     }
     
     func test_map_getEmptyResultOn200HTTPCodeAndEmptyJSON() throws {
-        let json = makeJSON([])
+        let json = makeStocksJSON([])
         
         let result = try RemoteStockSummaryDataMapper.map(json, HTTPURLResponse(statusCode: 200))
         
@@ -60,67 +60,26 @@ final class RemoteStockSummaryDataMapperTests: XCTestCase {
     }
     
     func test_map_getResultOn200HTTPCodeAndNotEmptyJSON() throws {
-        let item1 = makeItem(
+        let item1 = makeStockItem(
             symbol: "^GSPC",
             shortName: "S&P 500",
             time: 1778684490,
             previousPrice: 7400.96,
             currentPrice: 7413.06
         )
-        let item2 = makeItem(
+        let item2 = makeStockItem(
             symbol: "^DJI",
             shortName: "Dow Jones Industrial Average",
             time: 1778684491,
             previousPrice: 49760.56,
             currentPrice: 49892.41
         )
-        let json = makeJSON([item1.json, item2.json])
+        let json = makeStocksJSON([item1.json, item2.json])
         
         let result = try RemoteStockSummaryDataMapper.map(json, HTTPURLResponse(statusCode: 200))
         
         XCTAssertEqual(result.count, 2)
         XCTAssertEqual(result[0], item1.model)
         XCTAssertEqual(result[1], item2.model)
-    }
-    
-    //MARK: - Helpers
-    
-    private func makeItem(symbol: String,
-                          shortName: String,
-                          time: Int,
-                          previousPrice: Double,
-                          currentPrice: Double) -> (model: StockItem, json: [String: Any]) {
-        let model = StockItem(
-            symbol: symbol,
-            shortName: shortName,
-            time: time,
-            previousPrice: previousPrice,
-            currentPrice: currentPrice
-        )
-        let json: [String: Any] = [
-            "symbol": symbol,
-            "shortName": shortName,
-            "regularMarketTime": [
-                "raw": time
-            ],
-            "regularMarketPreviousClose": [
-                "raw": previousPrice
-            ],
-            "regularMarketPrice": [
-                "raw": currentPrice
-            ]
-        ]
-        
-        return (model, json)
-    }
-    
-    private func makeJSON(_ items: [[String: Any]], error: String? = nil) -> Data {
-        let json: [String: Any] = [
-            "marketSummaryAndSparkResponse": [
-                "result": items,
-                "error": jsonValue(error)
-            ]
-        ]
-        return try! JSONSerialization.data(withJSONObject: json)
     }
 }

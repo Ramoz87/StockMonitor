@@ -7,8 +7,6 @@
 
 import Foundation
 
-let baseUrl = "https://apidojo-yahoo-finance-v1.p.rapidapi.com"
-
 public enum APIEndpoint {
         
     case summary(region: Region)
