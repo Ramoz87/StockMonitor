@@ -10,10 +10,10 @@ import StockMonitor
 
 struct StockDetailView: View {
     @State private var isLoading = true
-    private let viewModel: StockDetailViewModel
+    @State private var viewModel: StockDetailViewModel
     
     init(viewModel: StockDetailViewModel) {
-        self.viewModel = viewModel
+        self._viewModel = State(wrappedValue: viewModel)
     }
     
     var body: some View {
@@ -41,6 +41,7 @@ struct StockDetailView: View {
         }
         .task {
             await loadInitialData()
+            viewModel.startUpdates()
         }
     }
     

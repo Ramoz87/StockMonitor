@@ -12,42 +12,51 @@ import StockMonitor
 @Observable
 final class StockDetailViewModel {
     
-    let stock: StockItem
+    private(set) var stock: StockItem
+    private let loader: StockLoader
     private let service: StockService
-    private var task: Task<Void, Never>?
+    private var updateTask: Task<Void, Never>?
     
     private(set) var errorMessage: String? = nil
     private(set) var sections: [StockDetailSection] = []
 
-    init(stock: StockItem, service: StockService) {
+    init(stock: StockItem, service: StockService, loader: StockLoader) {
         self.stock = stock
+        self.loader = loader
         self.service = service
     }
-
+    
+    deinit {
+        updateTask?.cancel()
+    }
+    
+    func startUpdates() {
+        loader.startStockUpdates(region: stock.region)
+    
+        updateTask = Task {
+            for await result in loader.stockUpdates(region: stock.region) {
+                guard !Task.isCancelled else { return }
+                updateState(result: result)
+            }
+        }
+    }
+    
     func loadDetails() async {
-        if let task {
-            return await task.value
+        do {
+            let details = try await service.getStockDetails(region: stock.region, symbol: stock.symbol)
+            sections = details?.toSections ?? []
+            errorMessage = nil
+        } catch {
+            errorMessage = error.localizedDescription
         }
-
-        task = Task { [weak self] in
-            guard let self else { return }
-
-            defer {
-                self.task = nil
-            }
-
-            do {
-                let details = try await service.getStockDetails(region: stock.region, symbol: stock.symbol)
-                guard !Task.isCancelled else { return }
-                sections = details?.toSections ?? []
-                errorMessage = nil
-            } catch {
-                guard !Task.isCancelled else { return }
-                errorMessage = error.localizedDescription
-            }
+    }
+    
+    private func updateState(result: Result<[StockItem], Error>) {
+        
+        if case .success(let items) = result,
+           let item = items.first(where: { $0.symbol == stock.symbol }){
+            stock = item
         }
-
-        await task?.value
     }
 }
 
