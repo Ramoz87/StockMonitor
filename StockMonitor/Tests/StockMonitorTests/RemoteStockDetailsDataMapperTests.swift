@@ -48,18 +48,12 @@ final class RemoteStockDetailsDataMapperTests: XCTestCase {
             open: 457.595,
             dayLow: 432.65,
             dayHigh: 459.5,
-            marketCap: 718263222272,
             volume: 9690920,
             averageVolume: 39315288,
             fiftyTwoWeekLow: 107.67,
             fiftyTwoWeekHigh: 469.22,
             fiftyDayAverage: 264.676,
             twoHundredDayAverage: 220.2454,
-            beta: 2.399,
-            trailingPE: 146.83,
-            forwardPE: 34.126564,
-            dividendRate: 0,
-            dividendYield: 0,
             currency: "USD"
         )
         let json = makeStockDetailsJSON([item.json])

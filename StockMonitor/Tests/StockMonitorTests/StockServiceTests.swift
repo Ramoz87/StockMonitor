@@ -12,7 +12,7 @@ final class StockServiceTests: XCTestCase {
     
     func test_getStocks_requestsSummaryEndpoint() async throws {
         let baseURL = URL(string: "http://base-url.com")!
-        let region = Region.ES
+        let region = "US"
         let (sut, client) = makeSUT(baseURL: baseURL, result: successResult(makeStocksJSON([])))
         
         _ = try await sut.getStocks(region: region)
@@ -21,13 +21,14 @@ final class StockServiceTests: XCTestCase {
         XCTAssertEqual(client.requests[0].url?.scheme, "http")
         XCTAssertEqual(client.requests[0].url?.host, "base-url.com")
         XCTAssertEqual(client.requests[0].url?.path, "/market/v2/get-summary")
-        XCTAssertEqual(client.requests[0].url?.query(), "region=\(region.rawValue)")
+        XCTAssertEqual(client.requests[0].url?.query(), "region=\(region)")
     }
     
     func test_getStocks_deliversMappedStocks() async throws {
         let item = makeStockItem(
             symbol: "^GSPC",
             shortName: "S&P 500",
+            region: "US",
             time: 1778684490,
             previousPrice: 7400.96,
             currentPrice: 7413.06
@@ -35,7 +36,7 @@ final class StockServiceTests: XCTestCase {
         let json = makeStocksJSON([item.json])
         let (sut, _) = makeSUT(result: successResult(json))
         
-        let result = try await sut.getStocks(region: .US)
+        let result = try await sut.getStocks(region: "US")
         
         XCTAssertEqual(result, [item.model])
     }
@@ -44,7 +45,7 @@ final class StockServiceTests: XCTestCase {
         let error = anyNSError()
         let (sut, _) = makeSUT(result: .failure(error))
         
-        await XCTAssertThrowsErrorAsync(try await sut.getStocks(region: .US)) { receivedError in
+        await XCTAssertThrowsErrorAsync(try await sut.getStocks(region: "US")) { receivedError in
             XCTAssertEqual(receivedError as NSError, error)
         }
     }
@@ -52,7 +53,7 @@ final class StockServiceTests: XCTestCase {
     
     func test_getStockDetails_requestsQuotesEndpoint() async throws {
         let baseURL = URL(string: "http://base-url.com")!
-        let region = Region.ES
+        let region = "US"
         let symbol = "AAPL"
         let (sut, client) = makeSUT(baseURL: baseURL, result: successResult(makeStockDetailsJSON([])))
         
@@ -62,7 +63,7 @@ final class StockServiceTests: XCTestCase {
         XCTAssertEqual(client.requests[0].url?.scheme, "http")
         XCTAssertEqual(client.requests[0].url?.host, "base-url.com")
         XCTAssertEqual(client.requests[0].url?.path, "/market/v2/get-quotes")
-        XCTAssertEqual(client.requests[0].url?.query?.contains("region=\(region.rawValue)"), true)
+        XCTAssertEqual(client.requests[0].url?.query?.contains("region=\(region)"), true)
         XCTAssertEqual(client.requests[0].url?.query?.contains("symbols=\(symbol)"), true)
     }
     
@@ -74,24 +75,18 @@ final class StockServiceTests: XCTestCase {
             open: 457.595,
             dayLow: 432.65,
             dayHigh: 459.5,
-            marketCap: 718263222272,
             volume: 9690920,
             averageVolume: 39315288,
             fiftyTwoWeekLow: 107.67,
             fiftyTwoWeekHigh: 469.22,
             fiftyDayAverage: 264.676,
             twoHundredDayAverage: 220.2454,
-            beta: 2.399,
-            trailingPE: 146.83,
-            forwardPE: 34.126564,
-            dividendRate: 0,
-            dividendYield: 0,
             currency: "USD"
         )
         let json = makeStockDetailsJSON([item.json])
         let (sut, _) = makeSUT(result: successResult(json))
         
-        let result = try await sut.getStockDetails(region: .US, symbol: symbol)
+        let result = try await sut.getStockDetails(region: "US", symbol: symbol)
         
         XCTAssertEqual(result, item.model)
     }
@@ -100,7 +95,7 @@ final class StockServiceTests: XCTestCase {
         let error = anyNSError()
         let (sut, _) = makeSUT(result: .failure(error))
         
-        await XCTAssertThrowsErrorAsync(try await sut.getStockDetails(region: .US, symbol: "AAPL")) { receivedError in
+        await XCTAssertThrowsErrorAsync(try await sut.getStockDetails(region: "US", symbol: "AAPL")) { receivedError in
             XCTAssertEqual(receivedError as NSError, error)
         }
     }

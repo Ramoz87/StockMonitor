@@ -63,6 +63,7 @@ final class RemoteStockSummaryDataMapperTests: XCTestCase {
         let item1 = makeStockItem(
             symbol: "^GSPC",
             shortName: "S&P 500",
+            region: "US",
             time: 1778684490,
             previousPrice: 7400.96,
             currentPrice: 7413.06
@@ -70,6 +71,7 @@ final class RemoteStockSummaryDataMapperTests: XCTestCase {
         let item2 = makeStockItem(
             symbol: "^DJI",
             shortName: "Dow Jones Industrial Average",
+            region: "US",
             time: 1778684491,
             previousPrice: 49760.56,
             currentPrice: 49892.41

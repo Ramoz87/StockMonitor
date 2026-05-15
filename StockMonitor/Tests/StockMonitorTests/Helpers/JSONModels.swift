@@ -22,6 +22,7 @@ func makeErrorJSON(message: String) -> Data {
 func makeStockItem(
     symbol: String,
     shortName: String,
+    region: String,
     time: Int,
     previousPrice: Double,
     currentPrice: Double
@@ -29,6 +30,7 @@ func makeStockItem(
     let model = StockItem(
         symbol: symbol,
         shortName: shortName,
+        region: region,
         time: time,
         previousPrice: previousPrice,
         currentPrice: currentPrice
@@ -36,6 +38,7 @@ func makeStockItem(
     let json: [String: Any] = [
         "symbol": symbol,
         "shortName": shortName,
+        "region": region,
         "regularMarketTime": [
             "raw": time
         ],
@@ -56,18 +59,12 @@ func makeStockDetailsItem(
     open: Double? = nil,
     dayLow: Double? = nil,
     dayHigh: Double? = nil,
-    marketCap: Int64? = nil,
     volume: Int64? = nil,
     averageVolume: Int64? = nil,
     fiftyTwoWeekLow: Double? = nil,
     fiftyTwoWeekHigh: Double? = nil,
     fiftyDayAverage: Double? = nil,
     twoHundredDayAverage: Double? = nil,
-    beta: Double? = nil,
-    trailingPE: Double? = nil,
-    forwardPE: Double? = nil,
-    dividendRate: Double? = nil,
-    dividendYield: Double? = nil,
     currency: String? = nil
 ) -> (model: StockItemDetails, json: [String: Any]) {
     let model = StockItemDetails(
@@ -76,18 +73,12 @@ func makeStockDetailsItem(
         open: open,
         dayLow: dayLow,
         dayHigh: dayHigh,
-        marketCap: marketCap,
         volume: volume,
         averageVolume: averageVolume,
         fiftyTwoWeekLow: fiftyTwoWeekLow,
         fiftyTwoWeekHigh: fiftyTwoWeekHigh,
         fiftyDayAverage: fiftyDayAverage,
         twoHundredDayAverage: twoHundredDayAverage,
-        beta: beta,
-        trailingPE: trailingPE,
-        forwardPE: forwardPE,
-        dividendRate: dividendRate,
-        dividendYield: dividendYield,
         currency: currency
     )
     let json: [String: Any] = [
@@ -98,18 +89,12 @@ func makeStockDetailsItem(
                 "open": jsonValue(open),
                 "dayLow": jsonValue(dayLow),
                 "dayHigh": jsonValue(dayHigh),
-                "marketCap": jsonValue(marketCap),
                 "volume": jsonValue(volume),
                 "averageVolume": jsonValue(averageVolume),
                 "fiftyTwoWeekLow": jsonValue(fiftyTwoWeekLow),
                 "fiftyTwoWeekHigh": jsonValue(fiftyTwoWeekHigh),
                 "fiftyDayAverage": jsonValue(fiftyDayAverage),
                 "twoHundredDayAverage": jsonValue(twoHundredDayAverage),
-                "beta": jsonValue(beta),
-                "trailingPE": jsonValue(trailingPE),
-                "forwardPE": jsonValue(forwardPE),
-                "dividendRate": jsonValue(dividendRate),
-                "dividendYield": jsonValue(dividendYield),
                 "currency": jsonValue(currency)
             ]
         ]

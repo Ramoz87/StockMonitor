@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		B7B3B7E42FB5B6AC008032F5 /* StockMonitor in Frameworks */ = {isa = PBXBuildFile; productRef = B7B3B7E32FB5B6AC008032F5 /* StockMonitor */; };
+		B7B3BCB42FB74A65008032F5 /* StockMonitor in Frameworks */ = {isa = PBXBuildFile; productRef = B7B3BCB32FB74A65008032F5 /* StockMonitor */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -56,6 +57,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B7B3BCB42FB74A65008032F5 /* StockMonitor in Frameworks */,
 				B7B3B7E42FB5B6AC008032F5 /* StockMonitor in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -118,6 +120,7 @@
 			name = StockMarket;
 			packageProductDependencies = (
 				B7B3B7E32FB5B6AC008032F5 /* StockMonitor */,
+				B7B3BCB32FB74A65008032F5 /* StockMonitor */,
 			);
 			productName = StockMarket;
 			productReference = B7B3B7B82FB5B631008032F5 /* StockMarket.app */;
@@ -202,7 +205,7 @@
 			mainGroup = B7B3B7AF2FB5B631008032F5;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				B7B3B7E22FB5B6AC008032F5 /* XCLocalSwiftPackageReference "../StockMonitor" */,
+				B7B3BCB22FB74A65008032F5 /* XCLocalSwiftPackageReference "../StockMonitor" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = B7B3B7B92FB5B631008032F5 /* Products */;
@@ -589,7 +592,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
-		B7B3B7E22FB5B6AC008032F5 /* XCLocalSwiftPackageReference "../StockMonitor" */ = {
+		B7B3BCB22FB74A65008032F5 /* XCLocalSwiftPackageReference "../StockMonitor" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = ../StockMonitor;
 		};
@@ -597,6 +600,10 @@
 
 /* Begin XCSwiftPackageProductDependency section */
 		B7B3B7E32FB5B6AC008032F5 /* StockMonitor */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = StockMonitor;
+		};
+		B7B3BCB32FB74A65008032F5 /* StockMonitor */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = StockMonitor;
 		};

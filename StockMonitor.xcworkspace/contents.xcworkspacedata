@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Workspace
+   version = "1.0">
+   <FileRef
+      location = "group:StockMonitor.xctestplan">
+   </FileRef>
+   <FileRef
+      location = "group:StockMarket/StockMarket.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:StockMarket.xctestplan">
+   </FileRef>
+   <FileRef
+      location = "group:StockMonitor">
+   </FileRef>
+</Workspace>

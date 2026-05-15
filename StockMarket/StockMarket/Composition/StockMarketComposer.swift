@@ -11,7 +11,7 @@ import StockMonitor
 final class StockMarketComposer {
     
     private let baseUrl = URL(string: "https://apidojo-yahoo-finance-v1.p.rapidapi.com")!
-    private let apiKey = "9aebe50b15msh003af9ba57fd9edp1091f4jsnb38c136f2c95"
+    private let apiKey = "2fbe6974f5msh489e387fc59fe24p1bed8cjsn2b98d813f544"
     
     private lazy var service: StockService = {
         let service = StockService(baseURL: baseUrl,

@@ -1,0 +1,24 @@
+{
+  "configurations" : [
+    {
+      "id" : "BDBE2E08-5FB2-42E8-97A2-400AEDF43690",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "StockMonitorTests",
+        "name" : "StockMonitorTests"
+      }
+    }
+  ],
+  "version" : 1
+}
