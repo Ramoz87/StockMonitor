@@ -11,17 +11,20 @@ import StockMonitor
 
 @Observable
 final class StockListViewModel {
-   
+    
+    private let region = "US"
+    private let loader: StockLoader
     private let service: StockService
     private var loadedStocks: [StockItem] = [] {
         didSet {
             stocks = stocksMatchingSearch()
         }
     }
-    private var tasks = [String: Task<Void, Never>]()
     
-    private(set) var errorMessage: String? = nil
+    private(set) var errorMessage: String?
     private(set) var stocks = [StockItem]()
+    
+    private var updateTask: Task<Void, Never>?
     
     var searchText = "" {
         didSet {
@@ -29,40 +32,42 @@ final class StockListViewModel {
         }
     }
     
-    init(service: StockService) {
+    deinit {
+        updateTask?.cancel()
+    }
+    
+    init(service: StockService, loader: StockLoader) {
+        self.loader = loader
         self.service = service
     }
     
-    func loadStocks(region: String = "US") async {
-        for taskRegion in tasks.keys where taskRegion != region {
-            tasks[taskRegion]?.cancel()
-            tasks[taskRegion] = nil
+    func loadStocks() async {
+        do {
+            let stocks = try await service.getStocks(region: region)
+            updateState(result: .success(stocks))
+        } catch {
+            updateState(result: .failure(error))
         }
-        
-        if let task = tasks[region] {
-            return await task.value
-        }
-                
-        let task = Task { [weak self] in
-            guard let self else { return }
-            
-            defer {
-                tasks[region] = nil
-            }
-            
-            do {
-                let stocks = try await service.getStocks(region: region)
-                guard !Task.isCancelled else { return }
-                loadedStocks = stocks
-                errorMessage = nil
-            } catch {
-                guard !Task.isCancelled else { return }
-                errorMessage = error.localizedDescription
+    }
+    
+    func startUpdates() {
+        loader.startStockUpdates(region: region)
+    
+        updateTask = Task {
+            for await result in loader.stockUpdates(region: region) {
+                updateState(result: result)
             }
         }
-        tasks[region] = task
-        
-        return await task.value
+    }
+    
+    private func updateState(result: Result<[StockItem], Error>) {
+        switch result {
+        case .success(let stocks):
+            loadedStocks = stocks
+            errorMessage = nil
+        case .failure(let error):
+            errorMessage = error.localizedDescription
+        }
     }
     
     private func stocksMatchingSearch() -> [StockItem] {

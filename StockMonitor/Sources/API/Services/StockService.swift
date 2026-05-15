@@ -10,11 +10,12 @@ import Foundation
 public final class StockService {
     private let baseURL: URL
     private let client: HTTPClient
-    public var requestAdapter: APIRequestAdapter?
+    private let requestAdapter: APIRequestAdapter?
     
-    public init(baseURL: URL, client: HTTPClient) {
+    public init(baseURL: URL, client: HTTPClient, adapter: APIRequestAdapter? = nil) {
         self.baseURL = baseURL
         self.client = client
+        self.requestAdapter = adapter
     }
         
     public func getStocks(region: String) async throws -> [StockItem] {

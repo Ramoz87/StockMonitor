@@ -14,10 +14,13 @@ final class StockMarketComposer {
     private let apiKey = "9aebe50b15msh003af9ba57fd9edp1091f4jsnb38c136f2c95"
     
     private lazy var service: StockService = {
-        let service = StockService(baseURL: baseUrl, client: URLSessionHTTPClient())
-        service.requestAdapter = ApiKeyRequestAdapter(apiKey: apiKey)
+        let service = StockService(baseURL: baseUrl,
+                                   client: URLSessionHTTPClient(),
+                                   adapter: ApiKeyRequestAdapter(apiKey: apiKey))
         return service
     }()
+    
+    private lazy var loader: StockLoader = IntervalStockLoader(service: service, interval: .seconds(8))
     
     var rootView: some View {
         makeView(for: .stocks)
@@ -34,15 +37,12 @@ final class StockMarketComposer {
     }
     
     private func makeStockDetailsView(_ item: StockItem) -> StockDetailView {
-        let model = StockDetailViewModel(stock: item, service: service)
+        let model = StockDetailViewModel(stock: item, service: service, loader: loader)
         return StockDetailView(viewModel: model)
     }
     
     private func makeStockListView() -> StockListView {
-        let service = StockService(baseURL: baseUrl, client: URLSessionHTTPClient())
-        service.requestAdapter = ApiKeyRequestAdapter(apiKey: apiKey)
-        let model = StockListViewModel(service: service)
-        
+        let model = StockListViewModel(service: service, loader: loader)
         return StockListView(viewModel: model)
     }
 }

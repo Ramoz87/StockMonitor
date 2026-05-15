@@ -10,7 +10,6 @@ import StockMonitor
 
 struct StockListView: View {
     @Environment(NavigationRouter<StockRoutes>.self) private var router
-    @State private var isLoading = true
     @State private var viewModel: StockListViewModel
     
     init(viewModel: StockListViewModel) {
@@ -18,39 +17,34 @@ struct StockListView: View {
     }
     
     var body: some View {
-        @Bindable var viewModel = viewModel
-        
-        Group {
-            if isLoading && viewModel.stocks.isEmpty {
-                ProgressView()
-            } else if let errorMessage = viewModel.errorMessage {
-                errorView(errorMessage)
-            } else {
-                listView(viewModel.stocks)
-                    .overlay {
-                        if viewModel.stocks.isEmpty {
-                            emptyView()
-                        }
-                    }
-                    .refreshable {
-                        await viewModel.loadStocks()
-                    }
-                    
+        List(viewModel.stocks) { stock in
+            Button {
+                openStockDetails(stock)
+            } label: {
+                StockListItemView(model: .init(stock: stock))
             }
+            .buttonStyle(.plain)
+        }
+        .overlay {
+            if viewModel.stocks.isEmpty {
+                emptyView()
+            }
+        }
+        .safeAreaInset(edge: .bottom) {
+            if let message = viewModel.errorMessage {
+                errorView(message)
+            }
+        }
+        .refreshable {
+            await viewModel.loadStocks()
         }
         .navigationTitle("Stocks")
         .searchable(text: $viewModel.searchText,
                     placement: .navigationBarDrawer(displayMode: .always),
                     prompt: "Search by name")
         .task {
-            await loadInitialData()
+            viewModel.startUpdates()
         }
-    }
-    
-    private func loadInitialData() async {
-        isLoading = true
-        await viewModel.loadStocks()
-        isLoading = false
     }
     
     private func emptyView() -> some View {
@@ -60,20 +54,12 @@ struct StockListView: View {
     }
     
     private func errorView(_ errorMessage: String) -> some View {
-        ContentUnavailableView("Could Not Load Stocks",
-                               systemImage: "exclamationmark.triangle",
-                               description: Text(errorMessage))
-    }
-    
-    private func listView(_ stocks: [StockItem]) -> some View {
-        List(stocks) { stock in
-            Button {
-                openStockDetails(stock)
-            } label: {
-                StockListItemView(model: .init(stock: stock))
-            }
-            .buttonStyle(.plain)
-        }
+        Text(errorMessage)
+            .font(.footnote)
+            .foregroundStyle(.secondary)
+            .multilineTextAlignment(.center)
+            .frame(maxWidth: .infinity)
+            .background(.bar)
     }
     
     private func openStockDetails(_ stock: StockItem) {
