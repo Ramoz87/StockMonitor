@@ -66,7 +66,3 @@ struct StockListView: View {
         router.push(.stockDetails(stock))
     }
 }
-
-#Preview {
-    StockMarketContainerView()
-}

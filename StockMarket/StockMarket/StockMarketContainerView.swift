@@ -21,7 +21,3 @@ struct StockMarketContainerView: View {
         .environment(router)
     }
 }
-
-#Preview {
-    StockMarketContainerView()
-}

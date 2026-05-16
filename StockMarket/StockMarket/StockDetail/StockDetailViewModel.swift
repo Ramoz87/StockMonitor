@@ -14,13 +14,13 @@ final class StockDetailViewModel {
     
     private(set) var stock: StockItem
     private let loader: StockLoader
-    private let service: StockService
+    private let service: StockDetailsService
     private var updateTask: Task<Void, Never>?
     
     private(set) var errorMessage: String? = nil
     private(set) var sections: [StockDetailSection] = []
-
-    init(stock: StockItem, service: StockService, loader: StockLoader) {
+    
+    init(stock: StockItem, service: StockDetailsService, loader: StockLoader) {
         self.stock = stock
         self.loader = loader
         self.service = service
@@ -32,7 +32,7 @@ final class StockDetailViewModel {
     
     func startUpdates() {
         loader.startStockUpdates(region: stock.region)
-    
+        
         updateTask = Task {
             for await result in loader.stockUpdates(region: stock.region) {
                 guard !Task.isCancelled else { return }
@@ -52,7 +52,6 @@ final class StockDetailViewModel {
     }
     
     private func updateState(result: Result<[StockItem], Error>) {
-        
         if case .success(let items) = result,
            let item = items.first(where: { $0.symbol == stock.symbol }){
             stock = item
@@ -101,9 +100,13 @@ private extension StockItemDetails {
             return value.formatted(.number.precision(.fractionLength(2)))
         }
     }
-
+    
     private func number(_ value: Int64?) -> String {
         guard let value else { return "Unavailable" }
         return value.formatted(.number)
     }
+}
+
+protocol StockDetailsService {
+    func getStockDetails(region: String, symbol: String) async throws -> StockItemDetails?
 }

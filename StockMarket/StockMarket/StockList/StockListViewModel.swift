@@ -14,7 +14,7 @@ final class StockListViewModel {
     
     private let region = "US"
     private let loader: StockLoader
-    private let service: StockService
+    private let service: StocksService
     private var loadedStocks: [StockItem] = [] {
         didSet {
             stocks = stocksMatchingSearch()
@@ -36,7 +36,7 @@ final class StockListViewModel {
         updateTask?.cancel()
     }
     
-    init(service: StockService, loader: StockLoader) {
+    init(service: StocksService, loader: StockLoader) {
         self.loader = loader
         self.service = service
     }
@@ -79,4 +79,8 @@ final class StockListViewModel {
             stock.shortName.localizedStandardContains(searchText)
         }
     }
+}
+
+protocol StocksService {
+   func getStocks(region: String) async throws -> [StockItem]
 }

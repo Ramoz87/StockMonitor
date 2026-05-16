@@ -46,3 +46,5 @@ final class StockMarketComposer {
         return StockListView(viewModel: model)
     }
 }
+
+extension StockService: StocksService, StockDetailsService {}

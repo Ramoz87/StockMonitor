@@ -138,21 +138,3 @@ final class IntervalStockLoaderTests: XCTestCase {
         return Data(#"{"marketSummaryAndSparkResponse":{"result":[],"error":null}}"#.utf8)
     }
 }
-
-private class HTTPClientSpy: HTTPClient {
-    private var results: [Result<(Data, HTTPURLResponse), Error>]
-    private(set) var count = 0
-    
-    init(results: [Result<(Data, HTTPURLResponse), Error>]) {
-        self.results = results
-    }
-    
-    func send(request: URLRequest) async throws -> (Data, HTTPURLResponse) {
-        count += 1
-        
-        if results.count > 1 {
-            return try results.removeFirst().get()
-        }
-        return try results[0].get()
-    }
-}

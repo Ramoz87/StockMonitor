@@ -42,18 +42,7 @@ struct StockListItemView: View {
                 .labelStyle(.titleAndIcon)
             }
         }
+        .contentShape(.rect)
         .accessibilityElement(children: .combine)
-    }
-}
-
-#Preview {
-    List {
-        StockListItemView(model: .init(stock:
-                .init(symbol: "AAPL",
-                      shortName: "Apple Inc.",
-                      region: "US",
-                      time: 0,
-                      previousPrice: 205.50,
-                      currentPrice: 210.30)))
     }
 }
