@@ -34,12 +34,14 @@ final class IntervalStockLoader: StockLoader {
         }
         
         let broadcaster = broadcaster(region: region)
-        let task = Task { [broadcaster, service, interval] in
+        let task = Task { [weak service, interval] in
             while !Task.isCancelled {
                 do {
-                    let result = try await service.getStocks(region: region)
+                    guard let result = try await service?.getStocks(region: region) else { return }
+                    guard !Task.isCancelled else { return }
                     broadcaster.send(.success(result))
                 } catch {
+                    guard !Task.isCancelled else { return }
                     broadcaster.send(.failure(error))
                 }
                 try? await Task.sleep(for: interval)
