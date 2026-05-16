@@ -24,14 +24,6 @@
         "identifier" : "B7B3B7C42FB5B633008032F5",
         "name" : "StockMarketTests"
       }
-    },
-    {
-      "parallelizable" : true,
-      "target" : {
-        "containerPath" : "container:StockMarket.xcodeproj",
-        "identifier" : "B7B3B7CE2FB5B633008032F5",
-        "name" : "StockMarketUITests"
-      }
     }
   ],
   "version" : 1
